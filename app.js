@@ -1,6 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const dataStore = require("nedb");
+
 const app = express();
+const database = new dataStore("database.db");
+database.loadDatabase();
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -13,14 +18,20 @@ class Items {
     }
 }
 
-let data = [];
-data.push(new Items("Key", "Room1"));
-data.push(new Items("Tissue", "RoomX"));
-data.push(new Items("Soap", "Toilet"));
-data.push(new Items("Shampoo", "Toilet"));
+
+function readAllData () {
+    return new Promise (resolve => {
+        database.find({}, (err, docs) => {
+            resolve(docs);
+        });
+    });
+}
+
 
 app.get("/", (req, res) => {
-    res.render("index", {items: data})
+    readAllData().then((data) => {
+        res.render("index", {items: data})
+    });
 });    
 
 app.get("/add", (req, res) => {
@@ -29,6 +40,9 @@ app.get("/add", (req, res) => {
 
 app.post("/add", (req, res) => {
     console.log(req.body);
+    const _name = req.body["item-name"];
+    const _loc = req.body["loc"];
+    database.insert(new Items(_name, _loc));
     res.send("Complete");
 });
 
