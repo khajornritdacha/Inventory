@@ -1,6 +1,9 @@
-// TODO: create module for Items class
 // TODO: register validation and password hashing
+// TODO: Not allow user to login/register when they are already logged in.
 // TODO: flash message
+// TODO: create module for Items class
+// TODO: add back to dashboard button
+// TODO: edit/ delete items and inventories
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -50,6 +53,7 @@ app.use(passport.session());
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 app.use("/add", require("./routes/add"));
+app.use("/dashboard", require("./routes/dashboard"));
 
 app.listen(PORT, () => {console.log(`Server is running at port ${PORT}`);});
 

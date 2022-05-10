@@ -8,17 +8,17 @@
       
         <div class="row" id="list">
         
-            <% items.forEach( (it)=> { %>
+            <% invt.forEach( (it)=> { %>
                 <div class="col-4 card">
                     <div class="card-body">
-                        <div class="card-title"> <%= it.name %> </div>
-                        <div class="card-text"> <%= it.loc %> </div>
+                        <div class="card-title"> <%= it.item_name %> </div>
+                        <div class="card-text"> <%= it.item_loc %> </div>
                     </div>
                 </div>
             <% }); %>
         </div>
     </div>
 
-    <script src="js/index.js"></script>
+    <script src="/js/index.js"></script>
 
 <%- include("templates/footer.ejs") %>

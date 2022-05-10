@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const dataStore = require("nedb");
-const { ensureAuthenticated } = require("../config/auth");
 
 const database = new dataStore("database.db");
 database.loadDatabase();
@@ -23,11 +22,6 @@ router.get("/", (req, res) => {
 });    
 
 
-// Dashboard
-router.get("/dashboard", ensureAuthenticated, (req, res) => {
-    res.render("dashboard", {
-        user: req.user,
-    });
-});
+
 
 module.exports = router;
