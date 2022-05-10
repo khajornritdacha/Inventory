@@ -1,5 +1,7 @@
+// TODO: create module for Items class
+// TODO: make route for add (if necessary)
+
 const express = require("express");
-const bodyParser = require("body-parser");
 const dataStore = require("nedb");
 
 const app = express();
@@ -8,8 +10,8 @@ database.loadDatabase();
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
 
 class Items {
@@ -31,12 +33,15 @@ function readAllData () {
 
 app.get("/", (req, res) => {
     readAllData().then((data) => {
-        res.render("index", {items: data})
+        res.render("index", {titleName: "Inventory", items: data})
     });
 });    
 
+// const addRouter = require("./routes/add");
+// app.use("/add", addRouter);
+
 app.get("/add", (req, res) => {
-    res.render("add"); 
+    res.render("add", {titleName: "Add New Item"}); 
 });
 
 app.post("/add", (req, res) => {
@@ -44,7 +49,7 @@ app.post("/add", (req, res) => {
     const _name = req.body["item-name"];
     const _loc = req.body["loc"];
     database.insert(new Items(_name, _loc));
-    res.send("Complete");
+    res.redirect("/");
 });
 
 
