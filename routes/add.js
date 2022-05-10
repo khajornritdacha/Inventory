@@ -1,9 +1,17 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 const dataStore = require("nedb");
 
 const database = new dataStore("database.db");
 database.loadDatabase();
+
+
+class Items {
+    constructor (_name, _loc) {
+        this.name = _name;
+        this.loc = _loc;
+    }
+}
+
 
 router.get("/", (req, res) => {
     res.render("add"); 

@@ -1,58 +1,56 @@
 // TODO: create module for Items class
-// TODO: make route for add (if necessary)
+// TODO: register validation and password hashing
+// TODO: flash message
 
 const express = require("express");
-const dataStore = require("nedb");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
 
+// const expressLayouts = require("express-ejs-layouts");
+
+const PORT = process.env.PORT || 3000;
 const app = express();
-const database = new dataStore("database.db");
-database.loadDatabase();
 
-app.set("view engine", "ejs");
+require("./config/passport")(passport);
+
+// DB
+// const CONFIG = require("./config/keys");
+// mongoose.connect(CONFIG.MongoURI, { useNewUrlParser: true})
+//  .then( () => console.log("MongoDB connected");)
+//  .catch( (e) => console.log(e);)
+mongoose.connect("mongodb://localhost/testdb", console.log("connected"));
+
+
+// Body Parser and Files
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
 
-class Items {
-    constructor (_name, _loc) {
-        this.name = _name;
-        this.loc = _loc;
-    }
-}
+// EJS
+// app.use(expressLayouts)
+app.set("view engine", "ejs");
 
 
-function readAllData () {
-    return new Promise (resolve => {
-        database.find({}, (err, docs) => {
-            resolve(docs);
-        });
-    });
-}
+// Express Session
+app.use(session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true
+}));
 
 
-app.get("/", (req, res) => {
-    readAllData().then((data) => {
-        res.render("index", {titleName: "Inventory", items: data})
-    });
-});    
+// Passport Middle Ware
+app.use(passport.initialize());
+app.use(passport.session());
 
-// const addRouter = require("./routes/add");
-// app.use("/add", addRouter);
+ 
+// Routes
+app.use("/", require("./routes/index"));
+app.use("/users", require("./routes/users"));
+app.use("/add", require("./routes/add"));
 
-app.get("/add", (req, res) => {
-    res.render("add", {titleName: "Add New Item"}); 
-});
-
-app.post("/add", (req, res) => {
-    console.log(req.body);
-    const _name = req.body["item-name"];
-    const _loc = req.body["loc"];
-    database.insert(new Items(_name, _loc));
-    res.redirect("/");
-});
-
-
-app.listen(3000, () => {console.log("Server is running at port 3000");});
+app.listen(PORT, () => {console.log(`Server is running at port ${PORT}`);});
 
 
