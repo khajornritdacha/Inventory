@@ -1,27 +1,36 @@
 <%- include("templates/header.ejs") %>
 <%- include("partials/navbar.ejs") %>
     <div class="container">
+        <h1> <%= invt.name %> </h1>
         <form action="">
             <label for="searchbar">Search Items</label>
             <input type="search" name="searchbar">
         </form>
 
+        <form action="/invt/update/<%= invt.id %>" method="POST">
+            <label for="name">Rename Inventory</label>
+            <input type="text" name="name" required>
+            <button type="submit" class="btn">Rename</button>
+        </form>
+
         <form action="/invt/<%= invt.id %>" method="POST">
             <label for="item_name">New item's Name</label>
-            <input type="text" name="item_name">
+            <input type="text" name="item_name" required>
             <label for="item_loc">New item's location</label>
-            <input type="text" name="item_loc">
+            <input type="text" name="item_loc" required>
             <button type="submit">Add</button>
         </form>
       
         <div class="row" id="list">
         
-            <% invt.items.forEach( (it)=> { %>
+            <% invt.items.forEach( (it, idx)=> { %>
                 <div class="col-4 card">
-                    <div class="card-body">
-                        <div class="card-title"> <%= it.item_name %> </div>
-                        <div class="card-text"> <%= it.item_loc %> </div>
-                    </div>
+                    <a href="/invt/edit_item/<%= invt.id %>/<%= idx %>">
+                        <div class="card-body">
+                            <div class="card-title"> <%= it.item_name %> </div>
+                            <div class="card-text"> <%= it.item_loc %> </div>
+                        </div>
+                    </a>
                 </div>
             <% }); %>
         </div>

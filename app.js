@@ -1,7 +1,8 @@
 // TODO: register validation and password hashing
-// TODO: flash message
 // TODO: add back to dashboard button
 // TODO: edit/ delete items and inventories
+// TODO: Hide login/ logout btn and add logout btn when user logged in
+// TODO: flash message
 
 if (process.env.NODE_ENV != "production") {
     require("dotenv").config();
