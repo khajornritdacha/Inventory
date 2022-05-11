@@ -1,0 +1,25 @@
+<%- include("templates/header.ejs") %>
+<%- include("partials/navbar.ejs") %>
+
+<h1 class="mt-4">Dashboard</h1>
+<p class="lead mb-3">Welcome <%= user.name %></p>
+<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<form action="/invt" method="POST">
+    <input type="text" name="inv_name" required>
+    <button type="submit">Create Inventory</button>
+</form>
+
+<div class="row" id="list">
+        
+    <% user.invts.forEach( (it)=> { %>
+        <div class="col-4 card">
+                <a href="/invt/<%= it.id %>">
+                <div class="card-body">
+                    <div class="card-title"> <%= it.name %> </div>
+                </div>
+            </a>
+        </div>
+    <% }); %>
+</div>
+
+<%- include("templates/footer.ejs") %>

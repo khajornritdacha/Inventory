@@ -1,0 +1,32 @@
+<%- include("templates/header.ejs") %>
+<%- include("partials/navbar.ejs") %>
+    <div class="container">
+        <form action="">
+            <label for="searchbar">Search Items</label>
+            <input type="search" name="searchbar">
+        </form>
+
+        <form action="/invt/<%= invt.id %>" method="POST">
+            <label for="item_name">New item's Name</label>
+            <input type="text" name="item_name">
+            <label for="item_loc">New item's location</label>
+            <input type="text" name="item_loc">
+            <button type="submit">Add</button>
+        </form>
+      
+        <div class="row" id="list">
+        
+            <% invt.items.forEach( (it)=> { %>
+                <div class="col-4 card">
+                    <div class="card-body">
+                        <div class="card-title"> <%= it.item_name %> </div>
+                        <div class="card-text"> <%= it.item_loc %> </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <script src="/js/index.js"></script>
+
+<%- include("templates/footer.ejs") %>
