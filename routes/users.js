@@ -1,30 +1,29 @@
 const router = require("express").Router();
 const passport = require("passport");
 const User = require("../models/User");
+const auth = require("../config/auth");
 
 // Login page
-router.get("/login", (req, res) => {
+router.get("/login", auth.checkNotAuthenticated, (req, res) => {
     res.render("login");
 });
 
 
 // Login Handle
-router.post("/login", (req, res, next) => {
-    passport.authenticate("local", {
-        successRedirect: "/dashboard",
-        failureRedirect: "/users/login",
-        // failureFlash: true,
-    })(req, res, next);
-});
+router.post("/login", auth.checkNotAuthenticated, passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/users/login",
+    failureFlash: true,
+}));
 
 
 // Register Page
-router.get("/register", (req, res) => {
+router.get("/register", auth.checkNotAuthenticated, (req, res) => {
     res.render("register");
 });
 
 
-router.post("/register", (req, res) => {
+router.post("/register", auth.checkNotAuthenticated, async (req, res) => {
     const { name, email, password, password2 } = req.body;
     // let errors = []; 
 
@@ -36,11 +35,8 @@ router.post("/register", (req, res) => {
             email,
             password,
         });
-        newUser.save()
-         .then(() => {
-            res.redirect("/users/login")
-         })
-        
+        await newUser.save()
+        res.redirect("/users/login")      
     } catch (e) {
         console.log(e.message); 
         res.render("register", {
@@ -51,12 +47,11 @@ router.post("/register", (req, res) => {
             password2,
         });
     }
-    // res.send("Completed");
 
 });
 
 // Logout Handle
-router.get("/logout", (req, res) => {
+router.get("/logout", auth.checkAuthenticated, (req, res) => {
     req.logout();
     // req.flash("success_msg", "You are logged out");
     res.redirect("/");

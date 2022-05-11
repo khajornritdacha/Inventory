@@ -1,21 +1,24 @@
 // TODO: register validation and password hashing
-// TODO: Not allow user to login/register when they are already logged in.
 // TODO: flash message
-// TODO: create module for Items class
 // TODO: add back to dashboard button
 // TODO: edit/ delete items and inventories
 
+if (process.env.NODE_ENV != "production") {
+    require("dotenv").config();
+}
+
 const express = require("express");
 const mongoose = require("mongoose");
+const flash = require("express-flash");
 const session = require("express-session");
 const passport = require("passport");
-
 // const expressLayouts = require("express-ejs-layouts");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-require("./config/passport")(passport);
+const initializePassport = require("./config/passport-config");
+initializePassport(passport);
 
 // DB
 // const CONFIG = require("./config/keys");
@@ -35,12 +38,14 @@ app.use(express.urlencoded({ extended: true}));
 // app.use(expressLayouts)
 app.set("view engine", "ejs");
 
+// Express flash
+app.use(flash());
 
 // Express Session
 app.use(session({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
 }));
 
 
@@ -54,6 +59,7 @@ app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 app.use("/add", require("./routes/add"));
 app.use("/dashboard", require("./routes/dashboard"));
+app.use("/invt", require("./routes/invt"));
 
 app.listen(PORT, () => {console.log(`Server is running at port ${PORT}`);});
 
